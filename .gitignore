@@ -99,3 +99,9 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/xcode,swift
+
+# DS_Store 올라가지 않도록 막기
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
