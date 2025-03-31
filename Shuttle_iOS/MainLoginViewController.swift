@@ -1,19 +1,17 @@
 //
-//  ViewController.swift
+//  MainLoginViewController.swift
 //  Shuttle_iOS
 //
-//  Created by 강대훈 on 3/25/25.
+//  Created by 강대훈 on 3/31/25.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class MainLoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view.
     }
-
-
 }
-
