@@ -35,6 +35,16 @@
 			path = Shuttle_iOS;
 			sourceTree = "<group>";
 		};
+		26CEFE9A2D99860B00616F1C /* Font */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Font;
+			sourceTree = "<group>";
+		};
+		26CEFEAE2D99869700616F1C /* Utils */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Utils;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +64,8 @@
 			children = (
 				26CEFB2E2D92A4F700616F1C /* .gitignore */,
 				26CEFB082D92A09F00616F1C /* Shuttle_iOS */,
+				26CEFEAE2D99869700616F1C /* Utils */,
+				26CEFE9A2D99860B00616F1C /* Font */,
 				26CEFB072D92A09F00616F1C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -83,6 +95,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				26CEFB082D92A09F00616F1C /* Shuttle_iOS */,
+				26CEFE9A2D99860B00616F1C /* Font */,
+				26CEFEAE2D99869700616F1C /* Utils */,
 			);
 			name = Shuttle_iOS;
 			packageProductDependencies = (
@@ -178,7 +192,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -210,7 +224,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
