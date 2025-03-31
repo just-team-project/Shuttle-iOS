@@ -18,8 +18,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        let userLoginRepository = UserLoginRepositoryTest()
+        let userLoginUseCase = UserLoginUseCase(userLoginRepository: userLoginRepository)
+        let viewModel = MainLoginViewModel(userLoginUseCase : userLoginUseCase)
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = MainLoginViewController()
+        window?.rootViewController = MainLoginViewController(viewModel: viewModel)
         
         window?.makeKeyAndVisible()
     }

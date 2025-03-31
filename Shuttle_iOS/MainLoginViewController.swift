@@ -11,6 +11,10 @@ import Combine
 
 final class MainLoginViewController: UIViewController {
     
+    private var viewModel : MainLoginViewModel
+    private let input = PassthroughSubject<MainLoginViewModel.Input, Never>()
+    private var cancellables : Set<AnyCancellable> = .init()
+    
     private lazy var stackView : UIStackView = {
         let sv = UIStackView(arrangedSubviews:
                                 [titleLabel,
@@ -26,7 +30,7 @@ final class MainLoginViewController: UIViewController {
     private let titleLabel: UILabel = {
         let l = UILabel()
         l.font = UIFont.pretendardExtraBold(size: 30.0)
-        l.text = "한신셔틀"
+        l.text = "셔틀"
         l.textAlignment = .center
         return l
     }()
@@ -68,14 +72,17 @@ final class MainLoginViewController: UIViewController {
         let t = UITextField()
         t.placeholder = "이메일을 입력해주세요."
         t.textColor = .hsDarkGray
-        t.font = UIFont.pretendardMedium(size: 16.0)
+        t.autocapitalizationType = .none
+        t.autocorrectionType = .no
         t.spellCheckingType = .no
+        t.keyboardType = .emailAddress
+        t.font = UIFont.pretendardMedium(size: 16.0)
         return t
     }()
     
     private let emailLabel : UILabel = {
         let l = UILabel()
-        l.text = "@hs.ac.kr"
+        l.text = Constant.emailDomain
         l.textColor = .hsDarkGray
         l.font = UIFont.pretendardMedium(size: 16.0)
         l.layer.borderWidth = 1
@@ -107,6 +114,15 @@ final class MainLoginViewController: UIViewController {
         return b
     }()
     
+    init(viewModel: MainLoginViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("MainLoginViewController - fatalError")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -114,14 +130,27 @@ final class MainLoginViewController: UIViewController {
         bind()
         configureAddSubViews()
         configureConstraints()
+        configureAddActions()
     }
     
     private func setup() {
         view.backgroundColor = .white
+        inputTextField.delegate = self
     }
     
     private func bind() {
+        let output = viewModel.transform(input: input.eraseToAnyPublisher())
         
+        output.sink { [weak self] event in
+            switch event {
+            case .userLoginSuccess:
+                self?.userLoginSuccess()
+            case .userLoginRequest:
+                self?.userLoginRequest()
+            case .invalidEmail:
+                self?.invalidEmail()
+            }
+        }.store(in: &cancellables)
     }
     
     private func configureAddSubViews() {
@@ -167,5 +196,48 @@ final class MainLoginViewController: UIViewController {
             $0.height.equalTo(54)
             $0.top.equalTo(userLoginStackView.snp.bottom).offset(24)
         }
+    }
+    
+    private func configureAddActions() {
+        addTappedEventToUserLoginButton()
+        addTappedEventToBusLoginButton()
+    }
+    
+    private func addTappedEventToUserLoginButton() {
+        userLoginButton.addAction(
+            UIAction { [weak self] _ in
+                guard let self = self else { return }
+                guard let text = inputTextField.text else { return }
+                input.send(.userLoginTapped(email: text + Constant.emailDomain))
+            }, for: .touchUpInside)
+    }
+    
+    private func addTappedEventToBusLoginButton() {
+        // TODO: - 버스 로그인
+    }
+}
+
+private extension MainLoginViewController {
+    // MARK: - User Login Success (User 화면으로 이동)
+    private func userLoginSuccess() {
+        print("UserLogin Success")
+    }
+    // MARK: - User Login Request (이메일에 요청을 보냄)
+    private func userLoginRequest() {
+        print("UserLogin Request")
+    }
+    // MARK: - Email이 유효하지 않음. (잘못된 입력)
+    private func invalidEmail() {
+        print("inValidEmail")
+    }
+}
+
+extension MainLoginViewController : UITextFieldDelegate {
+    // MARK: - 영어 숫자 백스페이스만 허용
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string.isEmpty { return true }
+        let allowedCharacters = CharacterSet(charactersIn: Constant.emailAllowCharacters)
+        let characterSet = CharacterSet(charactersIn: string)
+        return allowedCharacters.isSuperset(of: characterSet)
     }
 }
