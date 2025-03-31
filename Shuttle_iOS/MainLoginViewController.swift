@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Combine
 
 final class MainLoginViewController: UIViewController {
     
@@ -14,7 +15,7 @@ final class MainLoginViewController: UIViewController {
         let sv = UIStackView(arrangedSubviews:
                                 [titleLabel,
                                  titleImageView,
-                                 loginStackView])
+                                 userLoginStackView])
         sv.axis = .vertical
         sv.spacing = 47
         sv.alignment = .fill
@@ -36,9 +37,9 @@ final class MainLoginViewController: UIViewController {
         return i
     }()
     
-    private lazy var loginStackView: UIStackView = {
+    private lazy var userLoginStackView: UIStackView = {
         let sv = UIStackView(arrangedSubviews: [inputStackView,
-                                                loginButton])
+                                                userLoginButton])
         sv.axis = .vertical
         sv.spacing = 12
         sv.alignment = .fill
@@ -83,7 +84,7 @@ final class MainLoginViewController: UIViewController {
         return l
     }()
     
-    private let loginButton: UIButton = {
+    private let userLoginButton: UIButton = {
         let b = UIButton()
         b.backgroundColor = .login
         b.setTitleColor(.hsWhite, for: .normal)
@@ -110,12 +111,17 @@ final class MainLoginViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
+        bind()
         configureAddSubViews()
         configureConstraints()
     }
     
     private func setup() {
         view.backgroundColor = .white
+    }
+    
+    private func bind() {
+        
     }
     
     private func configureAddSubViews() {
@@ -152,14 +158,14 @@ final class MainLoginViewController: UIViewController {
             $0.centerY.equalToSuperview()
         }
         
-        loginButton.snp.makeConstraints {
+        userLoginButton.snp.makeConstraints {
             $0.height.equalTo(54)
         }
         
         busLoginButton.snp.makeConstraints {
             $0.leading.trailing.equalTo(view).inset(24)
             $0.height.equalTo(54)
-            $0.top.equalTo(loginStackView.snp.bottom).offset(24)
+            $0.top.equalTo(userLoginStackView.snp.bottom).offset(24)
         }
     }
 }
