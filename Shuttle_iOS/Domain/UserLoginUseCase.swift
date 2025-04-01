@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class UserLoginUseCase {
+final class UserLoginUseCase: Sendable {
     private let userLoginRepository: UserLoginRepository
     
     init(userLoginRepository: UserLoginRepository) {

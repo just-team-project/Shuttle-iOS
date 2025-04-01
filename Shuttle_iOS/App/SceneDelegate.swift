@@ -13,17 +13,51 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let userLoginRepository = UserLoginRepositoryTest()
-        let userLoginUseCase = UserLoginUseCase(userLoginRepository: userLoginRepository)
-        let viewModel = MainLoginViewModel(userLoginUseCase : userLoginUseCase)
-        window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = MainLoginViewController(viewModel: viewModel)
-        
-        window?.makeKeyAndVisible()
+        Task {
+            window = UIWindow(windowScene: windowScene)
+            await registerContainer()
+            window?.rootViewController = await createMainViewController()
+            window?.makeKeyAndVisible()
+        }
+    }
+    
+    private func createMainViewController() async -> UIViewController? {
+        return try? await DIContainer.shared.resolve(MainLoginViewController.self)
+    }
+    
+    private func registerContainer() async {
+        do {
+            await registerRepository()
+            try await registerUseCase()
+            try await registerViewModel()
+            try await registerViewController()
+        }
+        catch let error {
+            print((error as? DIError)?.description)
+        }
+    }
+    
+    private func registerRepository() async {
+        await DIContainer.shared.register(UserLoginRepository.self, UserLoginRepositoryTest())
+    }
+    
+    private func registerUseCase() async throws {
+        let userLoginRepository = try await DIContainer.shared.resolve(UserLoginRepository.self)
+        await DIContainer.shared.register(UserLoginUseCase.self,
+                                          UserLoginUseCase(userLoginRepository: userLoginRepository))
+    }
+    
+    private func registerViewModel() async throws {
+        let userLoginUseCase = try await DIContainer.shared.resolve(UserLoginUseCase.self)
+        await DIContainer.shared.register(MainLoginViewModel.self,
+                                          MainLoginViewModel(userLoginUseCase: userLoginUseCase))
+    }
+    
+    private func registerViewController() async throws {
+        let mainLoginViewModel = try await DIContainer.shared.resolve(MainLoginViewModel.self)
+        await DIContainer.shared.register(MainLoginViewController.self,
+                                          MainLoginViewController(viewModel: mainLoginViewModel))
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
