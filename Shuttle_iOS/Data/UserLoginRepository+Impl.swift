@@ -8,19 +8,15 @@
 import Foundation
 
 final class UserLoginRepositoryImpl: UserLoginRepository {
-    func existLocalData(email: String) -> Bool {
-        guard let userDefaultEmail = UserDefaults.standard.string(forKey: "email") else {
-            return false
-        }
-        return userDefaultEmail == email ? true : false
-    }
-    
-    func existServerData(email: String) -> Bool {
-        // TODO: - Server에 해당 이메일 정보가 있는지 확인.
+    func existLocalData(email: String, uuid: String) -> Bool {
         return true
     }
     
-    func sendData(email: String) {
-        // TODO: - Server에 이메일 정보, 기기정보를 보냄. (이메일 요청)
+    func existServerData(email: String, uuid: String) throws -> Bool {
+        return true
+    }
+    
+    func sendData(email: String, uuid: String) throws {
+        
     }
 }

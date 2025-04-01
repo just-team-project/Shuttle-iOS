@@ -14,17 +14,15 @@ final class UserLoginUseCase {
         self.userLoginRepository = userLoginRepository
     }
     
-    func execute(email : String) -> Bool {
-        // 1. UserDefault 먼저 로컬 DB 확인
-        if userLoginRepository.existLocalData(email: email) {
+    func execute(email : String, uuid: String) throws -> Bool {
+        if userLoginRepository.existLocalData(email: email, uuid: uuid) {
             return true
         }
-        else if userLoginRepository.existServerData(email: email) {
+        else if try userLoginRepository.existServerData(email: email, uuid: uuid) {
             return true
         }
         else {
-            // TODO: - 기기정보도 같이 보내야 할 수도 있음.
-            userLoginRepository.sendData(email: email)
+            try userLoginRepository.sendData(email: email, uuid: uuid)
             return false
         }
     }

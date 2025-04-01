@@ -147,8 +147,8 @@ final class MainLoginViewController: UIViewController {
                 self?.userLoginSuccess()
             case .userLoginRequest:
                 self?.userLoginRequest()
-            case .invalidEmail:
-                self?.invalidEmail()
+            case .failure(let errorString):
+                self?.failure(errorString)
             }
         }.store(in: &cancellables)
     }
@@ -227,8 +227,8 @@ private extension MainLoginViewController {
         print("UserLogin Request")
     }
     // MARK: - Email이 유효하지 않음. (잘못된 입력)
-    private func invalidEmail() {
-        print("inValidEmail")
+    private func failure(_ errorString : String) {
+        print(errorString)
     }
 }
 

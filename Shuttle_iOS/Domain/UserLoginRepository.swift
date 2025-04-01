@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UserLoginRepository {
-    func existLocalData(email: String) -> Bool
-    func existServerData(email: String) -> Bool
-    func sendData(email: String)
+    func existLocalData(email: String, uuid: String) -> Bool
+    func existServerData(email: String, uuid: String) throws -> Bool
+    func sendData(email: String, uuid: String) throws
 }

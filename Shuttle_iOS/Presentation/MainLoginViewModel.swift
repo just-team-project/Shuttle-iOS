@@ -5,9 +5,10 @@
 //  Created by 강대훈 on 3/31/25.
 //
 
-import Foundation
+import UIKit
 import Combine
 
+@MainActor
 public final class MainLoginViewModel {
     enum Input {
         case userLoginTapped(email: String)
@@ -17,7 +18,7 @@ public final class MainLoginViewModel {
     enum Output {
         case userLoginSuccess
         case userLoginRequest
-        case invalidEmail
+        case failure(_ errorString: String)
     }
     
     private let output = PassthroughSubject<Output, Never>()
@@ -41,16 +42,22 @@ public final class MainLoginViewModel {
     }
     
     private func userLoginTapped(_ email: String) {
-        // 서버에 해당 이메일 유저가 존재하는지 확인 (Get)
-        // true -> 바로 로그인
-        // false -> 서버에 이메일, 링크 요청
         
-        // 유저 정보 있는지 확인.
-        if userLoginUseCase.execute(email: email) {
-            output.send(.userLoginSuccess)
+        guard let uuidString = UIDevice.current.identifierForVendor?.uuidString else {
+            // 기기 정보를 가져올 수 없습니다.
+            return
         }
-        else {
-            output.send(.userLoginRequest)
+        
+        do {
+            try userLoginUseCase.execute(email: email, uuid: uuidString)
+            ? output.send(.userLoginSuccess) : output.send(.userLoginRequest)
+        }
+        catch let error {
+            guard let errorString = (error as? DataError)?.description else {
+                output.send(.failure("알 수 없는 에러"))
+                return
+            }
+            output.send(.failure(errorString))
         }
     }
     
