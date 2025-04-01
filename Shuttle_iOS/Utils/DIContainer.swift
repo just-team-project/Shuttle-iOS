@@ -6,13 +6,18 @@
 //
 
 public actor DIContainer {
+    
+    static let shared = DIContainer()
+    
+    private init() {}
+    
     private var dictionaries : [String:Any] = [:]
     
     public func register<T>(_ key: T.Type, _ value: T) {
         dictionaries[String(describing: key)] = value
     }
     
-    public func resolve<T>(key: T.Type) throws -> T {
+    public func resolve<T>(_ key: T.Type) throws -> T {
         let key = String(describing: key)
         guard let value = dictionaries[key] as? T else {
             // TODO: - 에러 핸들링 생각해봐야 함.
