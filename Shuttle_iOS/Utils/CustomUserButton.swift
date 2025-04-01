@@ -1,7 +1,7 @@
 import UIKit
 
 final class CustomUserButton: UIButton {
-    override init(frame: CGRect = CGRect(x: 0, y: 0, width: 60, height: 60)) {
+    override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         setup()
     }
