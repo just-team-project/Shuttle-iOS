@@ -226,7 +226,7 @@ private extension MainLoginViewController {
     private func userLoginRequest() {
         print("UserLogin Request")
     }
-    // MARK: - Email이 유효하지 않음. (잘못된 입력)
+    // MARK: - 발생할 수 있는 에러 핸들링
     private func failure(_ errorString : String) {
         print(errorString)
     }
