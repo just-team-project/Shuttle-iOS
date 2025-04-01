@@ -50,12 +50,10 @@ final class UserViewController: UIViewController {
     }
 }
 
-extension UserViewController : CLLocationManagerDelegate, MKMapViewDelegate {
+extension UserViewController : @preconcurrency CLLocationManagerDelegate, MKMapViewDelegate {
     // 위치 권한 메소드
-    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        Task { @MainActor in
-            checkLocationAuthorization()
-        }
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
     }
     
     func checkLocationAuthorization() {
