@@ -20,8 +20,7 @@ public actor DIContainer {
     public func resolve<T>(_ key: T.Type) throws -> T {
         let key = String(describing: key)
         guard let value = dictionaries[key] as? T else {
-            // TODO: - 에러 핸들링 생각해봐야 함.
-            throw CancellationError()
+            throw DIError.DIContainerFailure(type: key)
         }
         return value
     }
