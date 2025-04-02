@@ -247,13 +247,25 @@ private extension MainLoginViewController {
     }
     
     private func resignKeyBoard() {
-        // TODO: - Resign 될 때의 애니메이션
-        print("resign")
+        stackView.snp.remakeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).inset(130)
+            $0.leading.trailing.equalTo(view).inset(24)
+        }
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
     
     private func becomeKeyBoard() {
-        // TODO: - Become 될 때의 애니메이션
-        print("become")
+        stackView.snp.remakeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalTo(view).inset(24)
+        }
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
 }
 
