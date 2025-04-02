@@ -199,6 +199,7 @@ final class MainLoginViewController: UIViewController {
         
         inputTextField.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(10)
+            $0.height.equalToSuperview().inset(5)
             $0.centerY.equalToSuperview()
         }
         
