@@ -3,10 +3,51 @@ import SnapKit
 import MapKit
 import CoreLocation
 
-
 final class UserViewController: UIViewController {
-    private let locationManager = CLLocationManager()
-    private let mapView = MKMapView()
+    private let locationManager: CLLocationManager = .init()
+    private let mapView: MKMapView = .init()
+    
+    private let busCollectionView: UICollectionView = {
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        flowLayout.scrollDirection = .horizontal
+        flowLayout.minimumInteritemSpacing = 12
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
+    
+    private lazy var leftStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [logoutButton, faqButton])
+        sv.axis = .vertical
+        sv.spacing = 10
+        sv.alignment = .fill
+        sv.distribution = .fillEqually
+        return sv
+    }()
+    
+    private lazy var rightStackView : UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [alarmButton, notificationButton])
+        sv.axis = .vertical
+        sv.spacing = 10
+        sv.alignment = .fill
+        sv.distribution = .fillEqually
+        return sv
+    }()
+    
+    private let logoutButton: CustomUserButton = .init(
+        image: UIImage(named: "logout")
+    )
+    private let faqButton: CustomUserButton = .init(
+        image: UIImage(named: "faq")
+    )
+    private let alarmButton: CustomUserButton = .init(
+        image: UIImage(named: "alarm")
+    )
+    private let notificationButton: CustomUserButton = .init(
+        image: UIImage(named: "notification")
+    )
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +74,10 @@ final class UserViewController: UIViewController {
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        busCollectionView.delegate = self
+        busCollectionView.dataSource = self
+        busCollectionView.register(BusCollectionViewCell.self, forCellWithReuseIdentifier: BusCollectionViewCell.identifier)
     }
     
     private func bind() {
@@ -41,12 +86,51 @@ final class UserViewController: UIViewController {
     
     private func configureAddSubViews() {
         view.addSubview(mapView)
+        mapView.addSubview(busCollectionView)
+        mapView.addSubview(leftStackView)
+        mapView.addSubview(rightStackView)
     }
     
     private func configureConstraints() {
+        mapView.layoutMargins.bottom = -100
+        mapView.layoutMargins.top = -100
+        
         mapView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+        
+        busCollectionView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalToSuperview().inset(70)
+            $0.height.equalTo(24)
+        }
+        
+        leftStackView.snp.makeConstraints {
+            $0.height.equalTo(130)
+            $0.width.equalTo(60)
+            $0.leading.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().inset(60)
+        }
+        
+        rightStackView.snp.makeConstraints {
+            $0.height.equalTo(130)
+            $0.width.equalTo(60)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().inset(60)
+        }
+    }
+}
+
+extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BusCollectionViewCell.identifier, for: indexPath) as? BusCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        return cell
     }
 }
 
