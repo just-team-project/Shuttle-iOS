@@ -123,6 +123,11 @@ final class MainLoginViewController: UIViewController {
         fatalError("MainLoginViewController - fatalError")
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        inputTextField.resignFirstResponder()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
