@@ -30,8 +30,9 @@ final class MainLoginViewController: UIViewController {
     private let titleLabel: UILabel = {
         let l = UILabel()
         l.font = UIFont.pretendardExtraBold(size: 30.0)
-        l.text = "셔틀"
+        l.text = "셔틀셔틀"
         l.textAlignment = .center
+        l.addCharecterString()
         return l
     }()
     
