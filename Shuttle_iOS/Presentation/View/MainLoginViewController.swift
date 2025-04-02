@@ -123,6 +123,11 @@ final class MainLoginViewController: UIViewController {
         fatalError("MainLoginViewController - fatalError")
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        inputTextField.resignFirstResponder()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -151,6 +156,16 @@ final class MainLoginViewController: UIViewController {
                 self?.failure(errorString)
             }
         }.store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .sink { [weak self] _ in
+                self?.resignKeyBoard()
+            }.store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .sink { [weak self] _ in
+                self?.becomeKeyBoard()
+            }.store(in: &cancellables)
     }
     
     private func configureAddSubViews() {
@@ -184,6 +199,7 @@ final class MainLoginViewController: UIViewController {
         
         inputTextField.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(10)
+            $0.height.equalToSuperview().inset(5)
             $0.centerY.equalToSuperview()
         }
         
@@ -229,6 +245,28 @@ private extension MainLoginViewController {
     // MARK: - 발생할 수 있는 에러 핸들링
     private func failure(_ errorString : String) {
         print(errorString)
+    }
+    
+    private func resignKeyBoard() {
+        stackView.snp.remakeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).inset(130)
+            $0.leading.trailing.equalTo(view).inset(24)
+        }
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    private func becomeKeyBoard() {
+        stackView.snp.remakeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalTo(view).inset(24)
+        }
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
 }
 
