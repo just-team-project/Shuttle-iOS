@@ -156,6 +156,16 @@ final class MainLoginViewController: UIViewController {
                 self?.failure(errorString)
             }
         }.store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .sink { [weak self] _ in
+                self?.resignKeyBoard()
+            }.store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .sink { [weak self] _ in
+                self?.becomeKeyBoard()
+            }.store(in: &cancellables)
     }
     
     private func configureAddSubViews() {
@@ -234,6 +244,16 @@ private extension MainLoginViewController {
     // MARK: - 발생할 수 있는 에러 핸들링
     private func failure(_ errorString : String) {
         print(errorString)
+    }
+    
+    private func resignKeyBoard() {
+        // TODO: - Resign 될 때의 애니메이션
+        print("resign")
+    }
+    
+    private func becomeKeyBoard() {
+        // TODO: - Become 될 때의 애니메이션
+        print("become")
     }
 }
 
