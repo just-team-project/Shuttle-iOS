@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class UserViewModel {
     enum Input {
         case logoutTapped
@@ -17,7 +18,10 @@ final class UserViewModel {
     }
     
     enum Output {
-        
+        case userLogout
+        case presentFAQ
+        case presentAlarm
+        case presentNotification
     }
     
     private let output = PassthroughSubject<Output, Never>()
@@ -41,18 +45,19 @@ final class UserViewModel {
     }
     
     private func logoutTapped() {
-        
+        // TODO: - 로그아웃 UseCase
+        output.send(.userLogout)
     }
     
     private func faqTapped() {
-        
+        output.send(.presentFAQ)
     }
     
     private func alarmTapped() {
-        
+        output.send(.presentAlarm)
     }
     
     private func notificationTapped() {
-        
+        output.send(.presentNotification)
     }
 }
