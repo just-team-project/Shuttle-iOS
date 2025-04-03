@@ -2,8 +2,14 @@ import UIKit
 import SnapKit
 import MapKit
 import CoreLocation
+import Combine
 
 final class UserViewController: UIViewController {
+    
+    private var viewModel : UserViewModel
+    private let input = PassthroughSubject<UserViewModel.Input, Never>()
+    private var cancellables : Set<AnyCancellable> = .init()
+    
     private let locationManager: CLLocationManager = .init()
     private let mapView: MKMapView = .init()
     
@@ -48,6 +54,16 @@ final class UserViewController: UIViewController {
     private let notificationButton: CustomUserButton = .init(
         image: UIImage(named: "notification")
     )
+    
+    init(viewModel: UserViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("UserViewController - fatalError Init")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
