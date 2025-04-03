@@ -232,13 +232,13 @@ private extension MainLoginViewController {
     private func userLoginSuccess() {
         print("UserLogin Success")
     }
-    // MARK: - User Login Request (이메일에 요청을 보냄)
+    
     private func userLoginRequest() {
-        print("UserLogin Request")
+        present(UIAlertController.make(message: "메일 요청을 보냈습니다."), animated: true)
     }
-    // MARK: - 발생할 수 있는 에러 핸들링
+
     private func failure(_ errorString : String) {
-        print(errorString)
+        present(UIAlertController.make(message: errorString), animated: true)
     }
     
     private func resignKeyBoard() {
