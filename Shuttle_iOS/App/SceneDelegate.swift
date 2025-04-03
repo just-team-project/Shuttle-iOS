@@ -52,12 +52,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let userLoginUseCase = try await DIContainer.shared.resolve(UserLoginUseCase.self)
         await DIContainer.shared.register(MainLoginViewModel.self,
                                           MainLoginViewModel(userLoginUseCase: userLoginUseCase))
+        await DIContainer.shared.register(UserViewModel.self, UserViewModel())
     }
     
     private func registerViewController() async throws {
         let mainLoginViewModel = try await DIContainer.shared.resolve(MainLoginViewModel.self)
         await DIContainer.shared.register(MainLoginViewController.self,
                                           MainLoginViewController(viewModel: mainLoginViewModel))
+        
+        let userViewModel = try await DIContainer.shared.resolve(UserViewModel.self)
+        await DIContainer.shared.register(UserViewController.self,
+                                          UserViewController(viewModel: userViewModel))
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
