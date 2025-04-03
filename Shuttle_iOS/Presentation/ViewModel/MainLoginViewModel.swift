@@ -36,7 +36,7 @@ public final class MainLoginViewModel {
     
     private func userLoginTapped(_ email: String) {
         guard let uuidString = UIDevice.current.identifierForVendor?.uuidString else {
-            // 기기 정보를 가져올 수 없습니다.
+            output.send(.failure(DataError.deviceRequestFailure.description))
             return
         }
         do {
