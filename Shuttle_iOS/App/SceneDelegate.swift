@@ -26,8 +26,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             try await registerViewModel()
             try await registerViewController()
         }
-        catch let error {
-            print((error as? DIError)?.description)
+        catch let error as DIError {
+            print(error.description)
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
