@@ -1,10 +1,3 @@
-//
-//  MainLoginViewModel.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 3/31/25.
-//
-
 import UIKit
 import Combine
 
@@ -43,19 +36,17 @@ public final class MainLoginViewModel {
     
     private func userLoginTapped(_ email: String) {
         guard let uuidString = UIDevice.current.identifierForVendor?.uuidString else {
-            // 기기 정보를 가져올 수 없습니다.
+            output.send(.failure(DataError.deviceRequestFailure.description))
             return
         }
         do {
             try userLoginUseCase.execute(email: email, uuid: uuidString)
             ? output.send(.userLoginSuccess) : output.send(.userLoginRequest)
         }
-        catch let error {
-            guard let errorString = (error as? DataError)?.description else {
-                output.send(.failure("알 수 없는 에러"))
-                return
-            }
-            output.send(.failure(errorString))
+        catch let error as DataError {
+            output.send(.failure(error.description))
+        } catch {
+            output.send(.failure("알 수 없는 에러"))
         }
     }
     
