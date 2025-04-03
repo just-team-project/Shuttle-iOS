@@ -43,12 +43,10 @@ public final class MainLoginViewModel {
             try userLoginUseCase.execute(email: email, uuid: uuidString)
             ? output.send(.userLoginSuccess) : output.send(.userLoginRequest)
         }
-        catch let error {
-            guard let errorString = (error as? DataError)?.description else {
-                output.send(.failure("알 수 없는 에러"))
-                return
-            }
-            output.send(.failure(errorString))
+        catch let error as DataError {
+            output.send(.failure(error.description))
+        } catch {
+            output.send(.failure("알 수 없는 에러"))
         }
     }
     
