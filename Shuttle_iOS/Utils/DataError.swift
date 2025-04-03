@@ -1,10 +1,3 @@
-//
-//  DataError.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 4/1/25.
-//
-
 import Foundation
 
 enum DataError: Error {

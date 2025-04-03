@@ -1,10 +1,3 @@
-//
-//  DIContainer.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 4/1/25.
-//
-
 public actor DIContainer {
     
     static let shared = DIContainer()

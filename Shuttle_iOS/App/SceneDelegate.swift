@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 3/25/25.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

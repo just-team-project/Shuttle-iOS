@@ -1,17 +1,7 @@
-//
-//  AppDelegate.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 3/25/25.
-//
-
 import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         return true

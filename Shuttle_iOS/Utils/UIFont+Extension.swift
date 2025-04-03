@@ -1,10 +1,3 @@
-//
-//  UIFont+Extension.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 3/30/25.
-//
-
 import UIKit
 
 // TODO: - 추후에 에러처리로 바꿔야할지 고민중.
