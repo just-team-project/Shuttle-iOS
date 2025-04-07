@@ -78,6 +78,10 @@ final class UserViewController: UIViewController {
         checkLocationAuthorization()
     }
     
+    deinit {
+        print("UserViewController - Deinit")
+    }
+    
     private func setup() {
         view.backgroundColor = .white
         
