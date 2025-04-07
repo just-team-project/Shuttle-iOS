@@ -5,6 +5,6 @@
 //  Created by 강대훈 on 4/7/25.
 //
 
-protocol UserLogoutRepository: UserLogoutRepositoryTest {
-    
+protocol UserLogoutRepository: Sendable {
+    func executeLogout(uuidString: String)
 }

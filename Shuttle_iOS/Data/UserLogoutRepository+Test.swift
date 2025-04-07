@@ -1,10 +1,7 @@
-//
-//  UserLogoutRepository+Test.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 4/7/25.
-//
+import UIKit
 
-final class UserLogoutRepositoryTest {
-    
+final class UserLogoutRepositoryTest: UserLogoutRepository {
+    func executeLogout(uuidString: String) {
+        UserDefaults.standard.removeObject(forKey: uuidString)
+    }
 }
