@@ -10,7 +10,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task {
             window = UIWindow(windowScene: windowScene)
             await registerContainer()
-            window?.rootViewController = await createMainViewController()
+            guard let rootVC = await createMainViewController() else {
+                return
+            }
+            window?.rootViewController = UINavigationController(rootViewController: rootVC)
             window?.makeKeyAndVisible()
         }
     }
