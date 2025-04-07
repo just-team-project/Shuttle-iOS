@@ -2,12 +2,12 @@ import Foundation
 
 final class UserLoginRepositoryTest : UserLoginRepository {
     func existLocalData(email: String, uuid: String) -> Bool {
-        (UserDefaults.standard.string(forKey: email) ?? "") == uuid
+        (UserDefaults.standard.string(forKey: uuid) ?? "") == email
     }
     
     func existServerData(email: String, uuid: String) throws -> Bool {
         // TODO: - 서버에 있는지 확인하고 있으면 UserDefaults에 저장해줘야 함.
-        UserDefaults.standard.set(uuid, forKey: email)
+        UserDefaults.standard.set(email, forKey: uuid)
         throw DataError.serverConnectFailure
     }
     
