@@ -5,3 +5,6 @@
 //  Created by 강대훈 on 4/7/25.
 //
 
+final class UserLogoutRepository: UserLogoutRepositoryTest {
+    
+}
