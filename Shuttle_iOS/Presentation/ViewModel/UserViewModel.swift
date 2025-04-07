@@ -1,11 +1,6 @@
-//
-//  UserViewModel.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 4/3/25.
-//
 import Foundation
 import Combine
+import UIKit
 
 @MainActor
 final class UserViewModel {
@@ -25,6 +20,11 @@ final class UserViewModel {
     
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables: Set<AnyCancellable> = .init()
+    private var userLogoutUseCase: UserLogoutUseCase
+    
+    init(userLogoutUseCase: UserLogoutUseCase) {
+        self.userLogoutUseCase = userLogoutUseCase
+    }
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
         input.sink { [weak self] event in
@@ -44,7 +44,10 @@ final class UserViewModel {
     }
     
     private func logoutTapped() {
-        // TODO: - 로그아웃 UseCase
+        guard let uuidString = UIDevice.current.identifierForVendor?.uuidString else {
+            return
+        }
+        userLogoutUseCase.execute(uuidString: uuidString)
         output.send(.userLogout)
     }
     
