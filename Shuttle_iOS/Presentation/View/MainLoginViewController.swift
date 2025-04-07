@@ -23,7 +23,7 @@ final class MainLoginViewController: UIViewController {
     private let titleLabel: UILabel = {
         let l = UILabel()
         l.font = UIFont.pretendardExtraBold(size: 30.0)
-        l.text = "셔틀셔틀"
+        l.text = ""
         l.textAlignment = .center
         l.addCharecterString()
         return l
@@ -230,15 +230,23 @@ final class MainLoginViewController: UIViewController {
 private extension MainLoginViewController {
     // MARK: - User Login Success (User 화면으로 이동)
     private func userLoginSuccess() {
-        print("UserLogin Success")
+        Task {
+            do {
+                let userViewController = try await DIContainer.shared.resolve(UserViewController.self)
+                navigationController?.pushViewController(userViewController, animated: true)
+            }
+            catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     private func userLoginRequest() {
-        present(UIAlertController.make(message: "메일 요청을 보냈습니다."), animated: true)
+        present(UIAlertController.alert(message: "메일 요청을 보냈습니다."), animated: true)
     }
 
     private func failure(_ errorString : String) {
-        present(UIAlertController.make(message: errorString), animated: true)
+        present(UIAlertController.errorAlert(message: errorString), animated: true)
     }
     
     private func resignKeyBoard() {

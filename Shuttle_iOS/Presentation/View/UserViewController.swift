@@ -5,7 +5,6 @@ import CoreLocation
 import Combine
 
 final class UserViewController: UIViewController {
-    
     private var viewModel : UserViewModel
     private let input = PassthroughSubject<UserViewModel.Input, Never>()
     private var cancellables : Set<AnyCancellable> = .init()
@@ -81,6 +80,8 @@ final class UserViewController: UIViewController {
     
     private func setup() {
         view.backgroundColor = .white
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
         
         mapView.delegate = self
         mapView.preferredConfiguration = MKStandardMapConfiguration() // 기본 지도
@@ -188,8 +189,11 @@ final class UserViewController: UIViewController {
 
 private extension UserViewController {
     private func userLogout() {
-        // TODO: - 화면 전환
-        print("userLogout")
+        present(UIAlertController.alert(
+            title: "로그이웃",
+            message: "정말로 로그아웃하시겠습니까?") { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+        }, animated: true)
     }
     
     private func presentFAQ() {
