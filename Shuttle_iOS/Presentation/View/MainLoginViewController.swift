@@ -232,11 +232,13 @@ private extension MainLoginViewController {
     private func userLoginSuccess() {
         Task {
             do {
-                let userViewController = try await DIContainer.shared.resolve(UserViewController.self)
+                let userViewModelFactory = try await DIContainer.shared.resolve(UserViewModelFactory.self)
+                let userViewModel = userViewModelFactory.create()
+                let userViewController = UserViewController(viewModel: userViewModel)
                 navigationController?.pushViewController(userViewController, animated: true)
             }
-            catch {
-                print(error.localizedDescription)
+            catch let error as DIError {
+                print(error.description)
             }
         }
     }
