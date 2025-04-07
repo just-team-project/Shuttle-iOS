@@ -10,24 +10,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task {
             window = UIWindow(windowScene: windowScene)
             await registerContainer()
-            guard let rootVC = await createMainViewController() else {
-                return
-            }
+            let rootVC = await createMainViewController()
             window?.rootViewController = UINavigationController(rootViewController: rootVC)
             window?.makeKeyAndVisible()
         }
     }
     
-    private func createMainViewController() async -> UIViewController? {
-        return try? await DIContainer.shared.resolve(MainLoginViewController.self)
+    private func createMainViewController() async -> UIViewController {
+        do {
+            let mainViewModelFactory = try await DIContainer.shared.resolve(MainLoginViewModelFactory.self)
+            let mainViewModel = mainViewModelFactory.create()
+            return MainLoginViewController(viewModel: mainViewModel)
+        }
+        catch let error as DIError {
+            print(error.description)
+        } catch {
+            print(error.localizedDescription)
+        }
+        return UIViewController()
     }
     
     private func registerContainer() async {
         do {
             await registerRepository()
             try await registerUseCase()
-            try await registerViewModel()
-            try await registerViewController()
+            try await registerViewModelFactory()
         }
         catch let error as DIError {
             print(error.description)
@@ -51,25 +58,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                           UserLogoutUseCase(userLogoutRepository: userLogoutRepository))
     }
     
-    private func registerViewModel() async throws {
+    private func registerViewModelFactory() async throws {
         let userLoginUseCase = try await DIContainer.shared.resolve(UserLoginUseCase.self)
         await DIContainer.shared.register(MainLoginViewModel.self,
                                           MainLoginViewModel(userLoginUseCase: userLoginUseCase))
         
         let userLogoutUseCase = try await DIContainer.shared.resolve(UserLogoutUseCase.self)
-        await DIContainer.shared.register(UserViewModel.self,
-                                          UserViewModel(userLogoutUseCase: userLogoutUseCase))
+        await DIContainer.shared.register(UserViewModelFactory.self,
+                                          UserViewModelFactory(userLogoutUseCase: userLogoutUseCase))
     }
-    
-    private func registerViewController() async throws {
-        let mainLoginViewModel = try await DIContainer.shared.resolve(MainLoginViewModel.self)
-        await DIContainer.shared.register(MainLoginViewController.self,
-                                          MainLoginViewController(viewModel: mainLoginViewModel))
-        
-        let userViewModel = try await DIContainer.shared.resolve(UserViewModel.self)
-        await DIContainer.shared.register(UserViewController.self,
-                                          UserViewController(viewModel: userViewModel))
-    }
+
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
