@@ -46,6 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func registerRepository() async {
         await DIContainer.shared.register(UserLoginRepository.self, UserLoginRepositoryTest())
         await DIContainer.shared.register(UserLogoutRepository.self, UserLogoutRepositoryTest())
+        await DIContainer.shared.register(BusStationRepository.self, BusStationRepositoryTest())
     }
     
     private func registerUseCase() async throws {
@@ -56,16 +57,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let userLogoutRepository = try await DIContainer.shared.resolve(UserLogoutRepository.self)
         await DIContainer.shared.register(UserLogoutUseCase.self,
                                           UserLogoutUseCase(userLogoutRepository: userLogoutRepository))
+        
+        let busStationRepository = try await DIContainer.shared.resolve(BusStationRepository.self)
+        await DIContainer.shared.register(BusStationUseCase.self,
+                                          BusStationUseCase(repository: busStationRepository))
     }
     
     private func registerViewModelFactory() async throws {
         let userLoginUseCase = try await DIContainer.shared.resolve(UserLoginUseCase.self)
-        await DIContainer.shared.register(MainLoginViewModel.self,
-                                          MainLoginViewModel(userLoginUseCase: userLoginUseCase))
+        await DIContainer.shared.register(MainLoginViewModelFactory.self,
+                                          MainLoginViewModelFactory(userLoginUseCase: userLoginUseCase))
         
         let userLogoutUseCase = try await DIContainer.shared.resolve(UserLogoutUseCase.self)
+        let busStationUseCase = try await DIContainer.shared.resolve(BusStationUseCase.self)
         await DIContainer.shared.register(UserViewModelFactory.self,
-                                          UserViewModelFactory(userLogoutUseCase: userLogoutUseCase))
+                                          UserViewModelFactory(
+                                            userLogoutUseCase: userLogoutUseCase,
+                                            busStationUseCase: busStationUseCase
+                                          ))
     }
 
 

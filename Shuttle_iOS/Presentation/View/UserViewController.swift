@@ -12,6 +12,8 @@ final class UserViewController: UIViewController {
     private let locationManager: CLLocationManager = .init()
     private let mapView: MKMapView = .init()
     
+    private var initialTouchPoint: CGPoint = .zero
+    
     private let busCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -53,6 +55,14 @@ final class UserViewController: UIViewController {
     private let notificationButton: CustomUserButton = .init(
         image: UIImage(named: "notification")
     )
+    
+    private let busSliderView : BusSliderView = {
+        let b = BusSliderView()
+        b.backgroundColor = .white
+        b.clipsToBounds = true
+        b.layer.cornerRadius = 15
+        return b
+    }()
     
     init(viewModel: UserViewModel) {
         self.viewModel = viewModel
@@ -100,6 +110,9 @@ final class UserViewController: UIViewController {
         busCollectionView.delegate = self
         busCollectionView.dataSource = self
         busCollectionView.register(BusCollectionViewCell.self, forCellWithReuseIdentifier: BusCollectionViewCell.identifier)
+        
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(resignSliderView))
+        busSliderView.addGestureRecognizer(gesture)
     }
     
     private func bind() {
@@ -115,6 +128,10 @@ final class UserViewController: UIViewController {
                 self?.presentAlarm()
             case .presentNotification:
                 self?.presentNotification()
+            case .busStationResponse(let busStations):
+                self?.responseBusStations(busStations)
+            case .failure(let errorString):
+                self?.failure(errorString)
             }
         }.store(in: &cancellables)
     }
@@ -124,6 +141,7 @@ final class UserViewController: UIViewController {
         mapView.addSubview(busCollectionView)
         mapView.addSubview(leftStackView)
         mapView.addSubview(rightStackView)
+        mapView.addSubview(busSliderView)
     }
     
     private func configureConstraints() {
@@ -152,6 +170,12 @@ final class UserViewController: UIViewController {
             $0.width.equalTo(60)
             $0.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(60)
+        }
+        
+        busSliderView.snp.makeConstraints {
+            $0.height.equalTo(400)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(mapView.snp.bottom)
         }
     }
     
@@ -189,6 +213,44 @@ final class UserViewController: UIViewController {
                 self?.input.send(.notificationTapped)
             }, for: .touchUpInside)
     }
+    
+    @objc private func resignSliderView(_ sender: UIPanGestureRecognizer) {
+        let touchPoint = sender.location(in: self.view.window)
+        
+        if sender.state == .began {
+            initialTouchPoint = touchPoint
+        }
+        
+        if sender.state == .ended || sender.state == .cancelled {
+            if initialTouchPoint.y - touchPoint.y < -100 {
+                animateDismissSliderView()
+            }
+        }
+    }
+    
+    private func animatePresentSliderView() {
+        busSliderView.snp.remakeConstraints {
+            $0.height.equalTo(400)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(mapView.snp.bottom).inset(400)
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animateDismissSliderView() {
+        busSliderView.snp.remakeConstraints {
+            $0.height.equalTo(400)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(mapView.snp.bottom)
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
 }
 
 private extension UserViewController {
@@ -214,6 +276,14 @@ private extension UserViewController {
         // TODO: - 화면 전환
         print("presentNotification")
     }
+    
+    private func responseBusStations(_ busStations: [BusStation]) {
+        busSliderView.configure(busStations: busStations)
+    }
+    
+    private func failure(_ errorString: String) {
+        present(UIAlertController.errorAlert(message: errorString), animated: true)
+    }
 }
 
 extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSource {
@@ -226,6 +296,14 @@ extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        animatePresentSliderView()
+        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? BusCollectionViewCell else {
+            return
+        }
+        input.send(.busStationRequest(selectedCell.busLabel.text))
     }
 }
 
