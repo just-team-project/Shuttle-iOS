@@ -1,6 +1,6 @@
 import UIKit
 
-final class BusStationUseCase {
+final class BusStationUseCase: Sendable {
     private let repository: BusStationRepository
     
     init(repository: BusStationRepository) {
