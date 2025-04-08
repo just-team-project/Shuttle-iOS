@@ -9,6 +9,7 @@ final class BusCollectionViewCell: UICollectionViewCell {
     private let busLabel: UILabel = {
         let l = UILabel()
         l.font = .pretendardSemiBold(size: 14.0)
+        l.textColor = .hsBlack
         l.textAlignment = .center
         return l
     }()

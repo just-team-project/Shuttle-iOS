@@ -46,6 +46,9 @@ final class BusSliderView: UIView {
     private func setup() {
         stationTableView.delegate = self
         stationTableView.dataSource = self
+        stationTableView.rowHeight = 50
+        stationTableView.separatorStyle = .none
+        stationTableView.backgroundColor = .white
         stationTableView.register(StationTableViewCell.self, forCellReuseIdentifier: StationTableViewCell.identifier)
     }
     
@@ -78,13 +81,13 @@ final class BusSliderView: UIView {
         }
         
         refreshButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(10)
+            $0.trailing.equalToSuperview().inset(10)
             $0.centerY.equalToSuperview()
         }
         
         stationTableView.snp.makeConstraints {
             $0.bottom.leading.trailing.equalToSuperview()
-            $0.top.equalTo(titleView)
+            $0.top.equalTo(titleView.snp.bottom)
         }
     }
     

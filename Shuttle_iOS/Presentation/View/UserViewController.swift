@@ -54,6 +54,14 @@ final class UserViewController: UIViewController {
         image: UIImage(named: "notification")
     )
     
+    private let busSliderView : BusSliderView = {
+        let b = BusSliderView()
+        b.backgroundColor = .white
+        b.clipsToBounds = true
+        b.layer.cornerRadius = 15
+        return b
+    }()
+    
     init(viewModel: UserViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -124,6 +132,7 @@ final class UserViewController: UIViewController {
         mapView.addSubview(busCollectionView)
         mapView.addSubview(leftStackView)
         mapView.addSubview(rightStackView)
+        mapView.addSubview(busSliderView)
     }
     
     private func configureConstraints() {
@@ -152,6 +161,12 @@ final class UserViewController: UIViewController {
             $0.width.equalTo(60)
             $0.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(60)
+        }
+        
+        busSliderView.snp.makeConstraints {
+            $0.height.equalTo(400)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(mapView.snp.bottom)
         }
     }
     
