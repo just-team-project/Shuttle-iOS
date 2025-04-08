@@ -1,23 +1,48 @@
-//
-//  StationTableViewCell.swift
-//  Shuttle_iOS
-//
-//  Created by 강대훈 on 4/8/25.
-//
-
 import UIKit
+import SnapKit
 
-class StationTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+final class StationTableViewCell: UITableViewCell {
+    nonisolated static var identifier: String {
+        return String(describing: self)
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    private let stationLabel: UILabel = {
+        let l = UILabel()
+        l.font = .pretendardSemiBold(size: 18.0)
+        l.textColor = .hsBlack
+        l.addCharecterString()
+        return l
+    }()
+    
+    private let additionLabel: UILabel = {
+        let l = UILabel()
+        l.clipsToBounds = true
+        l.font = .pretendardSemiBold(size: 12.0)
+        l.textAlignment = .center
+        return l
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureAddSubViews()
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureAddSubViews() {
+        contentView.addSubview(stationLabel)
+        contentView.addSubview(additionLabel)
+        
+        stationLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().inset(10)
+        }
+        
+        additionLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(stationLabel).offset(10)
+        }
+    }
 }
