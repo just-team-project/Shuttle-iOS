@@ -18,6 +18,8 @@ final class StationTableViewCell: UITableViewCell {
         let l = UILabel()
         l.clipsToBounds = true
         l.font = .pretendardSemiBold(size: 12.0)
+        l.textColor = .hsBlack
+        l.backgroundColor = .blue.withAlphaComponent(0.3)
         l.textAlignment = .center
         return l
     }()
@@ -37,6 +39,10 @@ final class StationTableViewCell: UITableViewCell {
         selectionStyle = .none
     }
     
+    override func layoutSubviews() {
+        additionLabel.layer.cornerRadius = additionLabel.frame.height / 2
+    }
+    
     private func configureAddSubViews() {
         contentView.addSubview(stationLabel)
         contentView.addSubview(additionLabel)
@@ -48,15 +54,20 @@ final class StationTableViewCell: UITableViewCell {
         
         additionLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.width.equalTo(additionLabel.intrinsicContentSize.width + 15)
             $0.leading.equalTo(stationLabel.snp.trailing).offset(10)
         }
     }
     
     func configure(stationEntity: BusStation) {
+        // TODO: - Lat, Lon 어떻게 해야할지 고민
         stationLabel.text = stationEntity.name
         additionLabel.text = stationEntity.additionalName
+        
+        additionLabel.snp.remakeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.width.equalTo(additionLabel.intrinsicContentSize.width + 15)
+            $0.leading.equalTo(stationLabel.snp.trailing).offset(10)
+        }
         contentView.layoutIfNeeded()
-        // TODO: - Lat, Lon 어떻게 해야할지 고민
     }
 }
