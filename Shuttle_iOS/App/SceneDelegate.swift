@@ -60,8 +60,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private func registerViewModelFactory() async throws {
         let userLoginUseCase = try await DIContainer.shared.resolve(UserLoginUseCase.self)
-        await DIContainer.shared.register(MainLoginViewModel.self,
-                                          MainLoginViewModel(userLoginUseCase: userLoginUseCase))
+        await DIContainer.shared.register(MainLoginViewModelFactory.self,
+                                          MainLoginViewModelFactory(userLoginUseCase: userLoginUseCase))
         
         let userLogoutUseCase = try await DIContainer.shared.resolve(UserLogoutUseCase.self)
         await DIContainer.shared.register(UserViewModelFactory.self,
