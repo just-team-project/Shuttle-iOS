@@ -6,7 +6,7 @@ final class BusCollectionViewCell: UICollectionViewCell {
         return String(describing: self)
     }
     
-    private let busLabel: UILabel = {
+    let busLabel: UILabel = {
         let l = UILabel()
         l.font = .pretendardSemiBold(size: 14.0)
         l.textColor = .hsBlack
