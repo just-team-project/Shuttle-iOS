@@ -1,7 +1,7 @@
 import UIKit
 import SnapKit
 
-final class busSliderView: UIView {
+final class BusSliderView: UIView {
     private let titleView = UIView()
     
     private let sliderBar: UIView = {
@@ -93,7 +93,7 @@ final class busSliderView: UIView {
     }
 }
 
-extension busSliderView: UITableViewDelegate, UITableViewDataSource {
+extension BusSliderView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }
