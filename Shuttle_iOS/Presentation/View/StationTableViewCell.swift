@@ -48,7 +48,15 @@ final class StationTableViewCell: UITableViewCell {
         
         additionLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalTo(stationLabel).offset(10)
+            $0.width.equalTo(additionLabel.intrinsicContentSize.width + 15)
+            $0.leading.equalTo(stationLabel.snp.trailing).offset(10)
         }
+    }
+    
+    func configure(stationEntity: BusStation) {
+        stationLabel.text = stationEntity.name
+        additionLabel.text = stationEntity.additionalName
+        contentView.layoutIfNeeded()
+        // TODO: - Lat, Lon 어떻게 해야할지 고민
     }
 }

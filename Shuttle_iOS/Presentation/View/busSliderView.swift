@@ -2,6 +2,8 @@ import UIKit
 import SnapKit
 
 final class BusSliderView: UIView {
+    private var busStations : [BusStation] = []
+    
     private let titleView = UIView()
     
     private let sliderBar: UIView = {
@@ -33,10 +35,8 @@ final class BusSliderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
-        bind()
         configureAddSubViews()
         configureConstraints()
-        configureAddActions()
     }
     
     required init?(coder: NSCoder) {
@@ -50,10 +50,6 @@ final class BusSliderView: UIView {
         stationTableView.separatorStyle = .none
         stationTableView.backgroundColor = .white
         stationTableView.register(StationTableViewCell.self, forCellReuseIdentifier: StationTableViewCell.identifier)
-    }
-    
-    private func bind() {
-        
     }
     
     private func configureAddSubViews() {
@@ -91,19 +87,20 @@ final class BusSliderView: UIView {
         }
     }
     
-    private func configureAddActions() {
-        
+    func configure(busStations: [BusStation]) {
+        self.busStations = busStations
+        stationTableView.reloadData()
     }
 }
 
 extension BusSliderView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return busStations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StationTableViewCell.identifier, for: indexPath) as? StationTableViewCell else { return UITableViewCell() }
-        
+        cell.configure(stationEntity: busStations[indexPath.row])
         return cell
     }
 }

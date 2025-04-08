@@ -9,6 +9,7 @@ final class UserViewModel {
         case faqTapped
         case alarmTapped
         case notificationTapped
+        case busStationRequest(_ name: String?)
     }
     
     enum Output {
@@ -16,14 +17,18 @@ final class UserViewModel {
         case presentFAQ
         case presentAlarm
         case presentNotification
+        case busStationResponse(_ busStations: [BusStation])
+        case failure(_ errorString: String)
     }
     
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables: Set<AnyCancellable> = .init()
     private var userLogoutUseCase: UserLogoutUseCase
+    private var busStationUseCase: BusStationUseCase
     
-    init(userLogoutUseCase: UserLogoutUseCase) {
+    init(userLogoutUseCase: UserLogoutUseCase, busStationUseCase: BusStationUseCase) {
         self.userLogoutUseCase = userLogoutUseCase
+        self.busStationUseCase = busStationUseCase
     }
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
@@ -37,6 +42,8 @@ final class UserViewModel {
                 self?.alarmTapped()
             case .notificationTapped:
                 self?.notificationTapped()
+            case .busStationRequest(let busName):
+                self?.busStationRequest(name: busName)
             }
         }.store(in: &cancellables)
         
@@ -61,5 +68,23 @@ final class UserViewModel {
     
     private func notificationTapped() {
         output.send(.presentNotification)
+    }
+    
+    private func busStationRequest(name busName: String?) {
+        guard let busName = busName else {
+            output.send(.failure("알 수 없는 에러"))
+            return
+        }
+        do {
+            let busStations = try busStationUseCase.execute(name: busName)
+            output.send(.busStationResponse(busStations))
+        }
+        catch let error as DataError {
+            // TODO: - 에러 처리
+            print(error.description)
+        } catch {
+            // TODO: - 에러 처리
+            print(error.localizedDescription)
+        }
     }
 }

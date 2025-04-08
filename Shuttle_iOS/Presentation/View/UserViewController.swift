@@ -128,6 +128,10 @@ final class UserViewController: UIViewController {
                 self?.presentAlarm()
             case .presentNotification:
                 self?.presentNotification()
+            case .busStationResponse(let busStations):
+                self?.responseBusStations(busStations)
+            case .failure(let errorString):
+                self?.failure(errorString)
             }
         }.store(in: &cancellables)
     }
@@ -272,6 +276,14 @@ private extension UserViewController {
         // TODO: - 화면 전환
         print("presentNotification")
     }
+    
+    private func responseBusStations(_ busStations: [BusStation]) {
+        busSliderView.configure(busStations: busStations)
+    }
+    
+    private func failure(_ errorString: String) {
+        present(UIAlertController.errorAlert(message: errorString), animated: true)
+    }
 }
 
 extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSource {
@@ -291,6 +303,7 @@ extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSou
         guard let selectedCell = collectionView.cellForItem(at: indexPath) as? BusCollectionViewCell else {
             return
         }
+        input.send(.busStationRequest(selectedCell.busLabel.text))
     }
 }
 
