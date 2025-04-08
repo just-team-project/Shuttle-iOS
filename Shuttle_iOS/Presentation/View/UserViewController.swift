@@ -12,6 +12,8 @@ final class UserViewController: UIViewController {
     private let locationManager: CLLocationManager = .init()
     private let mapView: MKMapView = .init()
     
+    private var initialTouchPoint: CGPoint = .zero
+    
     private let busCollectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -108,6 +110,9 @@ final class UserViewController: UIViewController {
         busCollectionView.delegate = self
         busCollectionView.dataSource = self
         busCollectionView.register(BusCollectionViewCell.self, forCellWithReuseIdentifier: BusCollectionViewCell.identifier)
+        
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(resignSliderView))
+        busSliderView.addGestureRecognizer(gesture)
     }
     
     private func bind() {
@@ -204,6 +209,44 @@ final class UserViewController: UIViewController {
                 self?.input.send(.notificationTapped)
             }, for: .touchUpInside)
     }
+    
+    @objc private func resignSliderView(_ sender: UIPanGestureRecognizer) {
+        let touchPoint = sender.location(in: self.view.window)
+        
+        if sender.state == .began {
+            initialTouchPoint = touchPoint
+        }
+        
+        if sender.state == .ended || sender.state == .cancelled {
+            if initialTouchPoint.y - touchPoint.y < -100 {
+                animateDismissSliderView()
+            }
+        }
+    }
+    
+    private func animatePresentSliderView() {
+        busSliderView.snp.remakeConstraints {
+            $0.height.equalTo(400)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(mapView.snp.bottom).inset(400)
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animateDismissSliderView() {
+        busSliderView.snp.remakeConstraints {
+            $0.height.equalTo(400)
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(mapView.snp.bottom)
+        }
+        
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
 }
 
 private extension UserViewController {
@@ -241,6 +284,13 @@ extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSou
             return UICollectionViewCell()
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        animatePresentSliderView()
+        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? BusCollectionViewCell else {
+            return
+        }
     }
 }
 
