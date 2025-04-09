@@ -44,7 +44,12 @@ final class CustomDetailStationView: UIView {
     }
     
     private func setup() {
-        
+        backgroundColor = .white
+        busTableView.delegate = self
+        busTableView.dataSource = self
+        busTableView.rowHeight = 40
+        busTableView.backgroundColor = .white
+        busTableView.register(DetailStationTableViewCell.self, forCellReuseIdentifier: DetailStationTableViewCell.identifier)
     }
     
     private func configureAddSubViews() {
@@ -83,3 +88,16 @@ final class CustomDetailStationView: UIView {
     }
 }
 
+extension CustomDetailStationView: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailStationTableViewCell.identifier, for: indexPath) as? DetailStationTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        return cell
+    }
+}
