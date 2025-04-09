@@ -33,6 +33,7 @@ final class BusCollectionViewCell: UICollectionViewCell {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
         contentView.layer.cornerRadius = contentView.frame.height / 2
     }
     
