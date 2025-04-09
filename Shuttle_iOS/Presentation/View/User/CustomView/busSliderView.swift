@@ -8,7 +8,7 @@ protocol UserCellDelegate: AnyObject {
 
 final class BusSliderView: UIView {
     private var viewModel: UserViewModel
-    private weak var delegate: UserCellDelegate?
+    weak var delegate: UserCellDelegate?
     
     private let titleView = UIView()
     

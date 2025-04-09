@@ -97,6 +97,8 @@ final class UserViewController: UIViewController, UserCellDelegate {
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
+        busSliderView.delegate = self
+        
         mapView.delegate = self
         mapView.preferredConfiguration = MKStandardMapConfiguration() // 기본 지도
         mapView.isZoomEnabled = true // 줌 가능 여부
