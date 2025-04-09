@@ -114,6 +114,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         mapView.isZoomEnabled = true // 줌 가능 여부
         mapView.isScrollEnabled = true // 이동 가능 여부
         mapView.showsUserLocation = true // 현재 위치 표시
+        mapView.overrideUserInterfaceStyle = .light // 항상 라이트 모드
         mapView.setUserTrackingMode(.followWithHeading, animated: true) // 사용자 위치 추적
         
         locationManager.delegate = self
