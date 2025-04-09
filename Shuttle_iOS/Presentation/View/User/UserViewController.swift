@@ -194,7 +194,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         
         detailStationView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(18)
-            $0.bottom.equalToSuperview().inset(35)
+            $0.top.equalTo(mapView.snp.bottom)
             $0.height.equalTo(195)
         }
     }
@@ -267,13 +267,38 @@ final class UserViewController: UIViewController, UserCellDelegate {
             $0.top.equalTo(mapView.snp.bottom)
         }
         
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animatePresentDetailStationView() {
+        detailStationView.snp.remakeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.bottom.equalToSuperview().inset(35)
+            $0.height.equalTo(195)
+        }
+        
         UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animateDismissDetailStationView() {
+        detailStationView.snp.remakeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.top.equalTo(mapView.snp.bottom)
+            $0.height.equalTo(195)
+        }
+        
+        UIView.animate(withDuration: 0.1) { [weak self] in
             self?.view.layoutIfNeeded()
         }
     }
     
     // MARK: - Custom Delegate Method
     func tappedCellRow(_ idx: Int) {
+        animateDismissSliderView()
         let stationName = viewModel.busStations[idx].name
         let lat = viewModel.busStations[idx].lat
         let lon = viewModel.busStations[idx].lon
@@ -281,6 +306,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         let center = CLLocationCoordinate2D(latitude: lat, longitude: lon)
         let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: true)
+        animatePresentDetailStationView()
     }
 }
 
@@ -330,6 +356,7 @@ extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        animateDismissDetailStationView()
         animatePresentSliderView()
         guard let selectedCell = collectionView.cellForItem(at: indexPath) as? BusCollectionViewCell else {
             return
