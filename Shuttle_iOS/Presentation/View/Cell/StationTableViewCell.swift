@@ -15,7 +15,7 @@ final class StationTableViewCell: UITableViewCell {
     }()
     
     private let additionLabel: UILabel = {
-        let l = UILabel()
+        let l = CustomPaddingLabel()
         l.clipsToBounds = true
         l.font = .pretendardSemiBold(size: 12.0)
         l.textColor = .hsBlack
@@ -40,6 +40,7 @@ final class StationTableViewCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
         additionLabel.layer.cornerRadius = additionLabel.frame.height / 2
     }
     
@@ -62,12 +63,6 @@ final class StationTableViewCell: UITableViewCell {
         // TODO: - Lat, Lon 어떻게 해야할지 고민
         stationLabel.text = stationEntity.name
         additionLabel.text = stationEntity.additionalName
-        
-        additionLabel.snp.remakeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.width.equalTo(additionLabel.intrinsicContentSize.width + 15)
-            $0.leading.equalTo(stationLabel.snp.trailing).offset(10)
-        }
         contentView.layoutIfNeeded()
     }
 }
