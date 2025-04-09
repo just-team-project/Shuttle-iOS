@@ -56,8 +56,8 @@ final class UserViewController: UIViewController, UserCellDelegate {
         image: UIImage(named: "notification")
     )
     
-    private let busSliderView : BusSliderView = {
-        let b = BusSliderView()
+    private lazy var busSliderView : BusSliderView = {
+        let b = BusSliderView(viewModel: viewModel)
         b.backgroundColor = .white
         b.clipsToBounds = true
         b.layer.cornerRadius = 15

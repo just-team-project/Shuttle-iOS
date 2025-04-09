@@ -7,7 +7,7 @@ protocol UserCellDelegate: AnyObject {
 }
 
 final class BusSliderView: UIView {
-    private var viewModel: UserViewModel!
+    private var viewModel: UserViewModel
     private weak var delegate: UserCellDelegate?
     
     private let titleView = UIView()
@@ -38,8 +38,9 @@ final class BusSliderView: UIView {
     
     private let stationTableView = UITableView()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: UserViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         setup()
         configureAddSubViews()
         configureConstraints()
