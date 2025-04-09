@@ -64,6 +64,16 @@ final class UserViewController: UIViewController, UserCellDelegate {
         return b
     }()
     
+    private lazy var detailStationView: CustomDetailStationView = {
+        let b = CustomDetailStationView()
+        b.backgroundColor = .white
+        b.clipsToBounds = true
+        b.layer.borderWidth = 1
+        b.layer.borderColor = UIColor.hsUserStroke.cgColor
+        b.layer.cornerRadius = 15
+        return b
+    }()
+    
     init(viewModel: UserViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -144,6 +154,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         mapView.addSubview(leftStackView)
         mapView.addSubview(rightStackView)
         mapView.addSubview(stationView)
+        mapView.addSubview(detailStationView)
     }
     
     private func configureConstraints() {
@@ -178,6 +189,12 @@ final class UserViewController: UIViewController, UserCellDelegate {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom)
+        }
+        
+        detailStationView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.bottom.equalToSuperview().inset(35)
+            $0.height.equalTo(195)
         }
     }
     
