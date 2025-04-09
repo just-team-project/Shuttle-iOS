@@ -4,7 +4,7 @@ import MapKit
 import CoreLocation
 import Combine
 
-final class UserViewController: UIViewController {
+final class UserViewController: UIViewController, UserCellDelegate {
     private var viewModel : UserViewModel
     private let input = PassthroughSubject<UserViewModel.Input, Never>()
     private var cancellables : Set<AnyCancellable> = .init()
@@ -250,6 +250,13 @@ final class UserViewController: UIViewController {
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.view.layoutIfNeeded()
         }
+    }
+    
+    // MARK: - Custom Delegate Method
+    func tappedCellRow(_ idx: Int) {
+        let stationName = viewModel.busStations[idx].name
+        let lat = viewModel.busStations[idx].lat
+        let lon = viewModel.busStations[idx].lon
     }
 }
 

@@ -1,8 +1,14 @@
 import UIKit
 import SnapKit
 
+@MainActor
+protocol UserCellDelegate: AnyObject {
+    func tappedCellRow(_ idx: Int)
+}
+
 final class BusSliderView: UIView {
     private var viewModel: UserViewModel!
+    private weak var delegate: UserCellDelegate?
     
     private let titleView = UIView()
     
@@ -105,10 +111,6 @@ extension BusSliderView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? StationTableViewCell else {
-            return
-        }
-        let lat = viewModel.busStations[indexPath.row].lat
-        let lon = viewModel.busStations[indexPath.row].lon
+        delegate?.tappedCellRow(indexPath.row)
     }
 }
