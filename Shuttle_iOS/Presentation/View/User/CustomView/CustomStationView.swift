@@ -6,7 +6,7 @@ protocol UserCellDelegate: AnyObject {
     func tappedCellRow(_ idx: Int)
 }
 
-final class BusSliderView: UIView {
+final class CustomStationView: UIView {
     private var viewModel: UserViewModel
     weak var delegate: UserCellDelegate?
     
@@ -100,7 +100,7 @@ final class BusSliderView: UIView {
     }
 }
 
-extension BusSliderView: UITableViewDelegate, UITableViewDataSource {
+extension CustomStationView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.busStations.count
     }

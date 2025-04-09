@@ -56,8 +56,8 @@ final class UserViewController: UIViewController, UserCellDelegate {
         image: UIImage(named: "notification")
     )
     
-    private lazy var busSliderView : BusSliderView = {
-        let b = BusSliderView(viewModel: viewModel)
+    private lazy var stationView : CustomStationView = {
+        let b = CustomStationView(viewModel: viewModel)
         b.backgroundColor = .white
         b.clipsToBounds = true
         b.layer.cornerRadius = 15
@@ -97,7 +97,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
-        busSliderView.delegate = self
+        stationView.delegate = self
         
         mapView.delegate = self
         mapView.preferredConfiguration = MKStandardMapConfiguration() // 기본 지도
@@ -114,7 +114,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         busCollectionView.register(BusCollectionViewCell.self, forCellWithReuseIdentifier: BusCollectionViewCell.identifier)
         
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(resignSliderView))
-        busSliderView.addGestureRecognizer(gesture)
+        stationView.addGestureRecognizer(gesture)
     }
     
     private func bind() {
@@ -143,7 +143,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         mapView.addSubview(busCollectionView)
         mapView.addSubview(leftStackView)
         mapView.addSubview(rightStackView)
-        mapView.addSubview(busSliderView)
+        mapView.addSubview(stationView)
     }
     
     private func configureConstraints() {
@@ -174,7 +174,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
             $0.bottom.equalToSuperview().inset(60)
         }
         
-        busSliderView.snp.makeConstraints {
+        stationView.snp.makeConstraints {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom)
@@ -231,7 +231,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
     }
     
     private func animatePresentSliderView() {
-        busSliderView.snp.remakeConstraints {
+        stationView.snp.remakeConstraints {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom).inset(400)
@@ -243,7 +243,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
     }
     
     private func animateDismissSliderView() {
-        busSliderView.snp.remakeConstraints {
+        stationView.snp.remakeConstraints {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom)
@@ -291,7 +291,7 @@ private extension UserViewController {
     }
     
     private func responseBusStations(_ busStations: [BusStation]) {
-        busSliderView.configure(viewModel: viewModel)
+        stationView.configure(viewModel: viewModel)
     }
     
     private func failure(_ errorString: String) {
