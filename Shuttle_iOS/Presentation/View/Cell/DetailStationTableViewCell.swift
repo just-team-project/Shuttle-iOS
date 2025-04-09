@@ -11,6 +11,7 @@ final class DetailStationTableViewCell: UITableViewCell {
             image: .resizedImage(image: UIImage(named: "bus"),
             size: CGSize(width: 24, height: 24))
         )
+        iv.backgroundColor = .white
         return iv
     }()
     
@@ -35,6 +36,7 @@ final class DetailStationTableViewCell: UITableViewCell {
         let l = UILabel()
         l.font = .pretendardMedium(size: 12.0)
         l.textColor = .hsRed
+        l.textAlignment = .right
         l.addCharecterString()
         return l
     }()
@@ -43,6 +45,7 @@ final class DetailStationTableViewCell: UITableViewCell {
         let l = UILabel()
         l.font = .pretendardMedium(size: 12.0)
         l.textColor = .hsRed
+        l.textAlignment = .right
         l.addCharecterString()
         return l
     }()
