@@ -278,7 +278,7 @@ private extension UserViewController {
     }
     
     private func responseBusStations(_ busStations: [BusStation]) {
-        busSliderView.configure(busStations: busStations)
+        busSliderView.configure(viewModel: viewModel)
     }
     
     private func failure(_ errorString: String) {

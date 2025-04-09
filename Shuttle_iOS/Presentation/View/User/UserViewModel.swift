@@ -23,6 +23,7 @@ final class UserViewModel {
     
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables: Set<AnyCancellable> = .init()
+    private(set) var busStations: [BusStation] = []
     private var userLogoutUseCase: UserLogoutUseCase
     private var busStationUseCase: BusStationUseCase
     
@@ -77,6 +78,7 @@ final class UserViewModel {
         }
         do {
             let busStations = try busStationUseCase.execute(name: busName)
+            self.busStations = busStations
             output.send(.busStationResponse(busStations))
         }
         catch let error as DataError {

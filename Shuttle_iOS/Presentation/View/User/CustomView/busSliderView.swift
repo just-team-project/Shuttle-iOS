@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 
 final class BusSliderView: UIView {
-    private var busStations : [BusStation] = []
+    private var viewModel: UserViewModel!
     
     private let titleView = UIView()
     
@@ -87,20 +87,28 @@ final class BusSliderView: UIView {
         }
     }
     
-    func configure(busStations: [BusStation]) {
-        self.busStations = busStations
+    func configure(viewModel: UserViewModel) {
+        self.viewModel = viewModel
         stationTableView.reloadData()
     }
 }
 
 extension BusSliderView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return busStations.count
+        return viewModel.busStations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StationTableViewCell.identifier, for: indexPath) as? StationTableViewCell else { return UITableViewCell() }
-        cell.configure(stationEntity: busStations[indexPath.row])
+        cell.configure(stationEntity: viewModel.busStations[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? StationTableViewCell else {
+            return
+        }
+        let lat = viewModel.busStations[indexPath.row].lat
+        let lon = viewModel.busStations[indexPath.row].lon
     }
 }
