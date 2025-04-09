@@ -49,6 +49,7 @@ final class CustomDetailStationView: UIView {
         busTableView.dataSource = self
         busTableView.rowHeight = 40
         busTableView.backgroundColor = .white
+        busTableView.separatorStyle = .none
         busTableView.register(DetailStationTableViewCell.self, forCellReuseIdentifier: DetailStationTableViewCell.identifier)
     }
     
