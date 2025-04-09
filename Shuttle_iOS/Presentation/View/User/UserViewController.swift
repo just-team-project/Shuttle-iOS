@@ -259,6 +259,10 @@ final class UserViewController: UIViewController, UserCellDelegate {
         let stationName = viewModel.busStations[idx].name
         let lat = viewModel.busStations[idx].lat
         let lon = viewModel.busStations[idx].lon
+        print(stationName, lat, lon)
+        let center = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: true)
     }
 }
 
