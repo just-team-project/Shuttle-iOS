@@ -17,7 +17,7 @@ final class UserViewModel {
         case presentFAQ
         case presentAlarm
         case presentNotification
-        case busStationResponse(_ busStations: [BusStation])
+        case busStationResponse(_ name: String)
         case failure(_ errorString: String)
     }
     
@@ -79,7 +79,7 @@ final class UserViewModel {
         do {
             let busStations = try busStationUseCase.execute(name: busName)
             self.busStations = busStations
-            output.send(.busStationResponse(busStations))
+            output.send(.busStationResponse(busName))
         }
         catch let error as DataError {
             // TODO: - 에러 처리

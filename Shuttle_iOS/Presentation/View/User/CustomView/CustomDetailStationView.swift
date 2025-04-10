@@ -39,6 +39,7 @@ final class CustomDetailStationView: UIView {
         setup()
         configureAddSubViews()
         configureConstraints()
+        configureAddActions()
     }
     
     required init?(coder: NSCoder) {

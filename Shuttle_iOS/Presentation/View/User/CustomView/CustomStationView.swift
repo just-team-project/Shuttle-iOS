@@ -95,8 +95,9 @@ final class CustomStationView: UIView {
         }
     }
     
-    func configure(viewModel: UserViewModel) {
+    func configure(viewModel: UserViewModel, busName: String) {
         self.viewModel = viewModel
+        titleLabel.text = busName
         stationTableView.reloadData()
     }
 }

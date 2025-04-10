@@ -142,8 +142,8 @@ final class UserViewController: UIViewController, UserDelegate {
                 self?.presentAlarm()
             case .presentNotification:
                 self?.presentNotification()
-            case .busStationResponse(let busStations):
-                self?.responseBusStations(busStations)
+            case .busStationResponse(let busName):
+                self?.responseBusStations(busName)
             case .failure(let errorString):
                 self?.failure(errorString)
             }
@@ -338,8 +338,8 @@ private extension UserViewController {
         print("presentNotification")
     }
     
-    private func responseBusStations(_ busStations: [BusStation]) {
-        stationView.configure(viewModel: viewModel)
+    private func responseBusStations(_ busName: String) {
+        stationView.configure(viewModel: viewModel, busName: busName)
     }
     
     private func failure(_ errorString: String) {
