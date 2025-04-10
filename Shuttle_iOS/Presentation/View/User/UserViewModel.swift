@@ -17,12 +17,13 @@ final class UserViewModel {
         case presentFAQ
         case presentAlarm
         case presentNotification
-        case busStationResponse(_ busStations: [BusStation])
+        case busStationResponse(_ name: String)
         case failure(_ errorString: String)
     }
     
     private let output = PassthroughSubject<Output, Never>()
     private var cancellables: Set<AnyCancellable> = .init()
+    private(set) var busStations: [BusStation] = []
     private var userLogoutUseCase: UserLogoutUseCase
     private var busStationUseCase: BusStationUseCase
     
@@ -77,7 +78,8 @@ final class UserViewModel {
         }
         do {
             let busStations = try busStationUseCase.execute(name: busName)
-            output.send(.busStationResponse(busStations))
+            self.busStations = busStations
+            output.send(.busStationResponse(busName))
         }
         catch let error as DataError {
             // TODO: - 에러 처리

@@ -60,7 +60,6 @@ final class StationTableViewCell: UITableViewCell {
     }
     
     func configure(stationEntity: BusStation) {
-        // TODO: - Lat, Lon 어떻게 해야할지 고민
         stationLabel.text = stationEntity.name
         additionLabel.text = stationEntity.additionalName
         contentView.layoutIfNeeded()

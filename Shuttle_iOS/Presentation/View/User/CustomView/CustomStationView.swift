@@ -1,8 +1,15 @@
 import UIKit
 import SnapKit
 
-final class BusSliderView: UIView {
-    private var busStations : [BusStation] = []
+@MainActor
+protocol UserDelegate: AnyObject {
+    func tappedCellRow(_ idx: Int)
+    func tappedDismissButton()
+}
+
+final class CustomStationView: UIView {
+    private var viewModel: UserViewModel
+    weak var delegate: UserDelegate?
     
     private let titleView = UIView()
     
@@ -32,8 +39,9 @@ final class BusSliderView: UIView {
     
     private let stationTableView = UITableView()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: UserViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         setup()
         configureAddSubViews()
         configureConstraints()
@@ -87,20 +95,25 @@ final class BusSliderView: UIView {
         }
     }
     
-    func configure(busStations: [BusStation]) {
-        self.busStations = busStations
+    func configure(viewModel: UserViewModel, busName: String) {
+        self.viewModel = viewModel
+        titleLabel.text = busName
         stationTableView.reloadData()
     }
 }
 
-extension BusSliderView: UITableViewDelegate, UITableViewDataSource {
+extension CustomStationView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return busStations.count
+        return viewModel.busStations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StationTableViewCell.identifier, for: indexPath) as? StationTableViewCell else { return UITableViewCell() }
-        cell.configure(stationEntity: busStations[indexPath.row])
+        cell.configure(stationEntity: viewModel.busStations[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        delegate?.tappedCellRow(indexPath.row)
     }
 }

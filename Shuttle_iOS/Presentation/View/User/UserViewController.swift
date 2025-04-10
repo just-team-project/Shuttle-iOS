@@ -4,7 +4,7 @@ import MapKit
 import CoreLocation
 import Combine
 
-final class UserViewController: UIViewController {
+final class UserViewController: UIViewController, UserDelegate {
     private var viewModel : UserViewModel
     private let input = PassthroughSubject<UserViewModel.Input, Never>()
     private var cancellables : Set<AnyCancellable> = .init()
@@ -56,10 +56,20 @@ final class UserViewController: UIViewController {
         image: UIImage(named: "notification")
     )
     
-    private let busSliderView : BusSliderView = {
-        let b = BusSliderView()
+    private lazy var stationView : CustomStationView = {
+        let b = CustomStationView(viewModel: viewModel)
         b.backgroundColor = .white
         b.clipsToBounds = true
+        b.layer.cornerRadius = 15
+        return b
+    }()
+    
+    private lazy var detailStationView: CustomDetailStationView = {
+        let b = CustomDetailStationView()
+        b.backgroundColor = .white
+        b.clipsToBounds = true
+        b.layer.borderWidth = 1
+        b.layer.borderColor = UIColor.hsUserStroke.cgColor
         b.layer.cornerRadius = 15
         return b
     }()
@@ -97,11 +107,15 @@ final class UserViewController: UIViewController {
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
+        stationView.delegate = self
+        detailStationView.delegate = self
+        
         mapView.delegate = self
         mapView.preferredConfiguration = MKStandardMapConfiguration() // 기본 지도
         mapView.isZoomEnabled = true // 줌 가능 여부
         mapView.isScrollEnabled = true // 이동 가능 여부
         mapView.showsUserLocation = true // 현재 위치 표시
+        mapView.overrideUserInterfaceStyle = .light // 항상 라이트 모드
         mapView.setUserTrackingMode(.followWithHeading, animated: true) // 사용자 위치 추적
         
         locationManager.delegate = self
@@ -112,7 +126,7 @@ final class UserViewController: UIViewController {
         busCollectionView.register(BusCollectionViewCell.self, forCellWithReuseIdentifier: BusCollectionViewCell.identifier)
         
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(resignSliderView))
-        busSliderView.addGestureRecognizer(gesture)
+        stationView.addGestureRecognizer(gesture)
     }
     
     private func bind() {
@@ -128,8 +142,8 @@ final class UserViewController: UIViewController {
                 self?.presentAlarm()
             case .presentNotification:
                 self?.presentNotification()
-            case .busStationResponse(let busStations):
-                self?.responseBusStations(busStations)
+            case .busStationResponse(let busName):
+                self?.responseBusStations(busName)
             case .failure(let errorString):
                 self?.failure(errorString)
             }
@@ -141,7 +155,8 @@ final class UserViewController: UIViewController {
         mapView.addSubview(busCollectionView)
         mapView.addSubview(leftStackView)
         mapView.addSubview(rightStackView)
-        mapView.addSubview(busSliderView)
+        mapView.addSubview(stationView)
+        mapView.addSubview(detailStationView)
     }
     
     private func configureConstraints() {
@@ -172,10 +187,16 @@ final class UserViewController: UIViewController {
             $0.bottom.equalToSuperview().inset(60)
         }
         
-        busSliderView.snp.makeConstraints {
+        stationView.snp.makeConstraints {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom)
+        }
+        
+        detailStationView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.top.equalTo(mapView.snp.bottom)
+            $0.height.equalTo(195)
         }
     }
     
@@ -229,7 +250,7 @@ final class UserViewController: UIViewController {
     }
     
     private func animatePresentSliderView() {
-        busSliderView.snp.remakeConstraints {
+        stationView.snp.remakeConstraints {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom).inset(400)
@@ -241,15 +262,55 @@ final class UserViewController: UIViewController {
     }
     
     private func animateDismissSliderView() {
-        busSliderView.snp.remakeConstraints {
+        stationView.snp.remakeConstraints {
             $0.height.equalTo(400)
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(mapView.snp.bottom)
         }
         
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animatePresentDetailStationView() {
+        detailStationView.snp.remakeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.bottom.equalToSuperview().inset(35)
+            $0.height.equalTo(195)
+        }
+        
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.view.layoutIfNeeded()
         }
+    }
+    
+    private func animateDismissDetailStationView() {
+        detailStationView.snp.remakeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.top.equalTo(mapView.snp.bottom)
+            $0.height.equalTo(195)
+        }
+        
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+    }
+    
+    // MARK: - Custom Delegate Method
+    func tappedCellRow(_ idx: Int) {
+        animateDismissSliderView()
+        let stationName = viewModel.busStations[idx].name
+        let lat = viewModel.busStations[idx].lat
+        let lon = viewModel.busStations[idx].lon
+        let center = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: true)
+        animatePresentDetailStationView()
+    }
+    
+    func tappedDismissButton() {
+        animateDismissDetailStationView()
     }
 }
 
@@ -277,8 +338,8 @@ private extension UserViewController {
         print("presentNotification")
     }
     
-    private func responseBusStations(_ busStations: [BusStation]) {
-        busSliderView.configure(busStations: busStations)
+    private func responseBusStations(_ busName: String) {
+        stationView.configure(viewModel: viewModel, busName: busName)
     }
     
     private func failure(_ errorString: String) {
@@ -299,6 +360,7 @@ extension UserViewController : UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        animateDismissDetailStationView()
         animatePresentSliderView()
         guard let selectedCell = collectionView.cellForItem(at: indexPath) as? BusCollectionViewCell else {
             return
