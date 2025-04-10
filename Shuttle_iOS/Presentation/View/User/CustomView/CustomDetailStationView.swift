@@ -2,6 +2,8 @@ import UIKit
 import SnapKit
 
 final class CustomDetailStationView: UIView {
+    weak var delegate: UserDelegate?
+    
     private let titleView = UIView()
     
     private let mainLabel: UILabel = {
@@ -86,6 +88,12 @@ final class CustomDetailStationView: UIView {
             $0.top.equalTo(titleView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
+    }
+    
+    private func configureAddActions() {
+        dismissButton.addAction(UIAction { [weak self]_ in
+            self?.delegate?.tappedDismissButton()
+        }, for: .touchUpInside)
     }
 }
 

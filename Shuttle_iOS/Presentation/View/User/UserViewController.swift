@@ -4,7 +4,7 @@ import MapKit
 import CoreLocation
 import Combine
 
-final class UserViewController: UIViewController, UserCellDelegate {
+final class UserViewController: UIViewController, UserDelegate {
     private var viewModel : UserViewModel
     private let input = PassthroughSubject<UserViewModel.Input, Never>()
     private var cancellables : Set<AnyCancellable> = .init()
@@ -108,6 +108,7 @@ final class UserViewController: UIViewController, UserCellDelegate {
         navigationController?.setNavigationBarHidden(true, animated: false)
         
         stationView.delegate = self
+        detailStationView.delegate = self
         
         mapView.delegate = self
         mapView.preferredConfiguration = MKStandardMapConfiguration() // 기본 지도
@@ -302,11 +303,14 @@ final class UserViewController: UIViewController, UserCellDelegate {
         let stationName = viewModel.busStations[idx].name
         let lat = viewModel.busStations[idx].lat
         let lon = viewModel.busStations[idx].lon
-        print(stationName, lat, lon)
         let center = CLLocationCoordinate2D(latitude: lat, longitude: lon)
         let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: true)
         animatePresentDetailStationView()
+    }
+    
+    func tappedDismissButton() {
+        animateDismissDetailStationView()
     }
 }
 

@@ -2,13 +2,14 @@ import UIKit
 import SnapKit
 
 @MainActor
-protocol UserCellDelegate: AnyObject {
+protocol UserDelegate: AnyObject {
     func tappedCellRow(_ idx: Int)
+    func tappedDismissButton()
 }
 
 final class CustomStationView: UIView {
     private var viewModel: UserViewModel
-    weak var delegate: UserCellDelegate?
+    weak var delegate: UserDelegate?
     
     private let titleView = UIView()
     
