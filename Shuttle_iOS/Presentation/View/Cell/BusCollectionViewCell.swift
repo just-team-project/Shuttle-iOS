@@ -40,6 +40,8 @@ final class BusCollectionViewCell: UICollectionViewCell {
     private func setup() {
         contentView.clipsToBounds = true
         contentView.backgroundColor = .white
+        contentView.layer.borderWidth = 1
+        contentView.layer.borderColor = UIColor.hsUserStroke.cgColor
         
         // TODO: - 추후에 통신을 받음으로부터 바인딩 함.
         busLabel.text = ["55번", "56번", "청명역 셔틀버스", "병점역 셔틀버스", "가나다라마바사"].randomElement()
