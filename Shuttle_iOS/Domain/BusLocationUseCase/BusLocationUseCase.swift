@@ -1,0 +1,3 @@
+final class BusLocationUseCase: Sendable {
+    
+}
