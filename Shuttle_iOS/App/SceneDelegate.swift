@@ -47,6 +47,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         await DIContainer.shared.register(UserLoginRepository.self, UserLoginRepositoryTest())
         await DIContainer.shared.register(UserLogoutRepository.self, UserLogoutRepositoryTest())
         await DIContainer.shared.register(BusStationRepository.self, BusStationRepositoryTest())
+        await DIContainer.shared.register(BusLocationRepository.self, BusLocationRepositoryTest())
     }
     
     private func registerUseCase() async throws {
@@ -61,6 +62,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let busStationRepository = try await DIContainer.shared.resolve(BusStationRepository.self)
         await DIContainer.shared.register(BusStationUseCase.self,
                                           BusStationUseCase(repository: busStationRepository))
+        
+        let busLocationRepository = try await DIContainer.shared.resolve(BusLocationRepository.self)
+        await DIContainer.shared.register(BusLocationUseCase.self,
+                                          BusLocationUseCase(repository: busLocationRepository))
     }
     
     private func registerViewModelFactory() async throws {
@@ -70,10 +75,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let userLogoutUseCase = try await DIContainer.shared.resolve(UserLogoutUseCase.self)
         let busStationUseCase = try await DIContainer.shared.resolve(BusStationUseCase.self)
+        let busLocationUseCase = try await DIContainer.shared.resolve(BusLocationUseCase.self)
         await DIContainer.shared.register(UserViewModelFactory.self,
                                           UserViewModelFactory(
                                             userLogoutUseCase: userLogoutUseCase,
-                                            busStationUseCase: busStationUseCase
+                                            busStationUseCase: busStationUseCase,
+                                            busLocationUseCase: busLocationUseCase
                                           ))
     }
 
