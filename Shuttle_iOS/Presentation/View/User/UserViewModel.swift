@@ -18,6 +18,7 @@ final class UserViewModel {
         case presentAlarm
         case presentNotification
         case busStationResponse(_ name: String)
+        case busLocationResponse(_ busLocations: [BusLocation])
         case failure(_ errorString: String)
     }
     
@@ -26,10 +27,16 @@ final class UserViewModel {
     private(set) var busStations: [BusStation] = []
     private var userLogoutUseCase: UserLogoutUseCase
     private var busStationUseCase: BusStationUseCase
+    private var busLocationUseCase: BusLocationUseCase
     
-    init(userLogoutUseCase: UserLogoutUseCase, busStationUseCase: BusStationUseCase) {
+    init(
+        userLogoutUseCase: UserLogoutUseCase,
+        busStationUseCase: BusStationUseCase,
+        busLocationUseCase: BusLocationUseCase
+    ) {
         self.userLogoutUseCase = userLogoutUseCase
         self.busStationUseCase = busStationUseCase
+        self.busLocationUseCase = busLocationUseCase
     }
     
     func transform(input: AnyPublisher<Input, Never>) -> AnyPublisher<Output, Never> {
@@ -44,7 +51,8 @@ final class UserViewModel {
             case .notificationTapped:
                 self?.notificationTapped()
             case .busStationRequest(let busName):
-                self?.busStationRequest(name: busName)
+                Task { await self?.busLocationRequest(name: busName) }
+                Task { self?.busStationRequest(name: busName) }
             }
         }.store(in: &cancellables)
         
@@ -80,6 +88,24 @@ final class UserViewModel {
             let busStations = try busStationUseCase.execute(name: busName)
             self.busStations = busStations
             output.send(.busStationResponse(busName))
+        }
+        catch let error as DataError {
+            // TODO: - 에러 처리
+            print(error.description)
+        } catch {
+            // TODO: - 에러 처리
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func busLocationRequest(name busName: String?) async {
+        guard let busName = busName else {
+            output.send(.failure("알 수 없는 에러"))
+            return
+        }
+        do {
+            let busLocations = try await busLocationUseCase.execute(name: busName)
+            output.send(.busLocationResponse(busLocations))
         }
         catch let error as DataError {
             // TODO: - 에러 처리
