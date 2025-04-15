@@ -342,6 +342,10 @@ private extension UserViewController {
         stationView.configure(viewModel: viewModel, busName: busName)
     }
     
+    private func responseBusLocations(_ busLocations: [BusLocation]) {
+        stationView.fetchBusLocations(busLocations)
+    }
+    
     private func failure(_ errorString: String) {
         present(UIAlertController.errorAlert(message: errorString), animated: true)
     }

@@ -100,6 +100,10 @@ final class CustomStationView: UIView {
         titleLabel.text = busName
         stationTableView.reloadData()
     }
+    
+    func fetchBusLocations(_ busLocations: [BusLocation]) {
+        // TODO: - 테이블뷰와 스크롤이 동기화된 ScrollView를 사용해야 함.
+    }
 }
 
 extension CustomStationView: UITableViewDelegate, UITableViewDataSource {
