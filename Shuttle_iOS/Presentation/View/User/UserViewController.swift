@@ -144,6 +144,8 @@ final class UserViewController: UIViewController, UserDelegate {
                 self?.presentNotification()
             case .busStationResponse(let busName):
                 self?.responseBusStations(busName)
+            case .busLocationResponse(let busLocations):
+                self?.responseBusLocations(busLocations)
             case .failure(let errorString):
                 self?.failure(errorString)
             }
