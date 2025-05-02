@@ -24,14 +24,6 @@ final class StationTableViewCell: UITableViewCell {
         return l
     }()
     
-    private let routeLineImageView: UIImageView = {
-        let iv = UIImageView(image: UIImage.resizedImage(
-            image: UIImage(named: "routeLine"),
-            size: CGSize(width: 13, height: 50))
-        )
-        return iv
-    }()
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
