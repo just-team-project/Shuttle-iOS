@@ -38,7 +38,22 @@ final class CustomStationView: UIView {
     }()
     
     private let stationTableView = UITableView()
-    
+
+    private let routeScrollView: UIScrollView = {
+        let sc = UIScrollView()
+        sc.translatesAutoresizingMaskIntoConstraints = false
+        sc.backgroundColor = .white
+        sc.showsVerticalScrollIndicator = false // 세로 스크롤 표시 여부
+        return sc
+    }()
+
+    private let busRouteView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = .red
+        return v
+    }()
+
     init(viewModel: UserViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
@@ -63,6 +78,10 @@ final class CustomStationView: UIView {
     private func configureAddSubViews() {
         addSubview(titleView)
         addSubview(stationTableView)
+        addSubview(routeScrollView)
+
+        routeScrollView.addSubview(busRouteView)
+
         titleView.addSubview(sliderBar)
         titleView.addSubview(titleLabel)
         titleView.addSubview(refreshButton)
@@ -90,11 +109,23 @@ final class CustomStationView: UIView {
         }
         
         stationTableView.snp.makeConstraints {
-            $0.bottom.leading.trailing.equalToSuperview()
+            $0.bottom.leading.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(50)
             $0.top.equalTo(titleView.snp.bottom)
         }
+
+        routeScrollView.snp.makeConstraints {
+            $0.leading.equalTo(stationTableView.snp.trailing)
+            $0.top.equalTo(stationTableView.snp.top)
+            $0.bottom.trailing.equalToSuperview()
+        }
+
+        busRouteView.snp.makeConstraints {
+            $0.leading.trailing.top.bottom.equalToSuperview()
+            $0.width.equalTo(routeScrollView.snp.width)
+        }
     }
-    
+
     func configure(viewModel: UserViewModel, busName: String) {
         self.viewModel = viewModel
         titleLabel.text = busName
