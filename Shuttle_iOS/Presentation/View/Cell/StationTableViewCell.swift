@@ -47,7 +47,6 @@ final class StationTableViewCell: UITableViewCell {
     private func configureAddSubViews() {
         contentView.addSubview(stationLabel)
         contentView.addSubview(additionLabel)
-        contentView.addSubview(routeLineImageView)
         
         stationLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
@@ -57,10 +56,6 @@ final class StationTableViewCell: UITableViewCell {
         additionLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(stationLabel.snp.trailing).offset(10)
-        }
-        
-        routeLineImageView.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(15)
         }
     }
     
