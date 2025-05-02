@@ -10,7 +10,8 @@ protocol UserDelegate: AnyObject {
 final class CustomStationView: UIView {
     private var viewModel: UserViewModel
     weak var delegate: UserDelegate?
-    
+    private var viewModel: UserViewModel
+    private var isSyncingScroll: Bool = false
     private let titleView = UIView()
     
     private let sliderBar: UIView = {
@@ -73,6 +74,7 @@ final class CustomStationView: UIView {
         stationTableView.separatorStyle = .none
         stationTableView.backgroundColor = .white
         stationTableView.register(StationTableViewCell.self, forCellReuseIdentifier: StationTableViewCell.identifier)
+        routeScrollView.delegate = self
     }
     
     private func configureAddSubViews() {
@@ -130,6 +132,13 @@ final class CustomStationView: UIView {
         self.viewModel = viewModel
         titleLabel.text = busName
         stationTableView.reloadData()
+
+        // MARK: - 정류장 개수에 맞는 busRouteView 높이 계산
+        busRouteView.snp.remakeConstraints {
+            $0.leading.trailing.top.bottom.equalToSuperview()
+            $0.height.equalTo(stationTableView.contentSize.height)
+            $0.width.equalTo(routeScrollView.snp.width)
+        }
     }
     
     func fetchBusLocations(_ busLocations: [BusLocation]) {
@@ -150,5 +159,22 @@ extension CustomStationView: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.tappedCellRow(indexPath.row)
+    }
+}
+
+extension CustomStationView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !isSyncingScroll else { return }
+        let offSetY = scrollView.contentOffset.y
+
+        isSyncingScroll = true
+
+        if scrollView == stationTableView {
+            routeScrollView.setContentOffset(CGPoint(x: 0, y: offSetY), animated: false)
+        } else if scrollView == routeScrollView {
+            stationTableView.setContentOffset(CGPoint(x: 0, y: offSetY), animated: false)
+        }
+
+        isSyncingScroll = false
     }
 }
