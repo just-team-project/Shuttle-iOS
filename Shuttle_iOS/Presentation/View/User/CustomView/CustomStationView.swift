@@ -8,7 +8,6 @@ protocol UserDelegate: AnyObject {
 }
 
 final class CustomStationView: UIView {
-    private var viewModel: UserViewModel
     weak var delegate: UserDelegate?
     private var viewModel: UserViewModel
     private var isSyncingScroll: Bool = false
@@ -54,7 +53,6 @@ final class CustomStationView: UIView {
     private let busRouteView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = .red
         return v
     }()
 
@@ -136,7 +134,6 @@ final class CustomStationView: UIView {
         self.viewModel = viewModel
         titleLabel.text = busName
         stationTableView.reloadData()
-
         // MARK: - 정류장 개수에 맞는 busRouteView 높이 계산
         busRouteView.snp.remakeConstraints {
             $0.leading.trailing.top.bottom.equalToSuperview()
