@@ -13,7 +13,10 @@ final class CustomStationView: UIView {
     private var viewModel: UserViewModel
     private var isSyncingScroll: Bool = false
     private let titleView = UIView()
-    
+
+    private var routeImageList: [UIImageView] = []
+    private var busImageList: [UIImageView] = []
+
     private let sliderBar: UIView = {
         let v = UIView()
         v.backgroundColor = .hsDarkGray
