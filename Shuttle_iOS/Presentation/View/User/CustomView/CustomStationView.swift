@@ -143,8 +143,27 @@ final class CustomStationView: UIView {
             $0.height.equalTo(stationTableView.contentSize.height)
             $0.width.equalTo(routeScrollView.snp.width)
         }
+        addRouteImage()
     }
-    
+
+    // MARK: - 정류장 수 만큼의 라우트 이미지 추가
+    private func addRouteImage() {
+        routeImageList.forEach { $0.removeFromSuperview() }
+        routeImageList.removeAll(keepingCapacity: true)
+        for i in 0..<viewModel.busStations.count {
+            let imageView = UIImageView(image: UIImage(named: "routeLine"))
+            imageView.frame = CGRect(x: (busRouteView.frame.width / 2) - 6.5,
+                                     y: CGFloat(i) * 50,
+                                     width: 13,
+                                     height: 50)
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            routeImageList.append(imageView)
+            busRouteView.addSubview(imageView)
+        }
+    }
+
+    // MARK: - 버스 위치 받았을 때의 버스 아이콘 추가 및 위치 계산
     func fetchBusLocations(_ busLocations: [BusLocation]) {
         // TODO: - 테이블뷰와 스크롤이 동기화된 ScrollView를 사용해야 함.
     }
