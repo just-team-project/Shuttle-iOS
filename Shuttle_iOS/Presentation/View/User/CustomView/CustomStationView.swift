@@ -73,6 +73,7 @@ final class CustomStationView: UIView {
         stationTableView.rowHeight = 50
         stationTableView.separatorStyle = .none
         stationTableView.backgroundColor = .white
+        stationTableView.showsVerticalScrollIndicator = false
         stationTableView.register(StationTableViewCell.self, forCellReuseIdentifier: StationTableViewCell.identifier)
         routeScrollView.delegate = self
     }
