@@ -165,7 +165,20 @@ final class CustomStationView: UIView {
 
     // MARK: - 버스 위치 받았을 때의 버스 아이콘 추가 및 위치 계산
     func fetchBusLocations(_ busLocations: [BusLocation]) {
-        // TODO: - 테이블뷰와 스크롤이 동기화된 ScrollView를 사용해야 함.
+        busImageList.forEach { $0.removeFromSuperview() }
+        busImageList.removeAll(keepingCapacity: true)
+        for busLocation in busLocations {
+            guard let stationNumber = busLocation.stationNumber else { return }
+            let imageView = UIImageView(image: UIImage(named: "bus"))
+            // TODO: - 정교한 프레임 계산식 필요
+            imageView.frame = CGRect(x: (busRouteView.frame.width / 2 - 11.5),
+                                     y: CGFloat(stationNumber) * 50 + 25 - 11.5,
+                                     width: 23,
+                                     height: 23)
+            imageView.contentMode = .scaleAspectFit
+            busImageList.append(imageView)
+            busRouteView.addSubview(imageView)
+        }
     }
 }
 
